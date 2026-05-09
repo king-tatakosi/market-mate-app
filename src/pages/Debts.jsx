@@ -27,8 +27,6 @@ export function Debts({ debts, supplierDebts }) {
     return shown.filter(d => (d[nameKey] || d.name || '').toLowerCase().includes(q));
   }, [allRecords, search, showPaid, isOweMe]);
 
-  const unpaidCount = (isOweMe ? debts.unpaid : supplierDebts.unpaid)?.length ?? 0;
-
   const handleAdd = async data => {
     const payload = isOweMe ? data : { ...data, supplierName: data.name };
     if (isOweMe) await debts.addDebt(payload);
@@ -43,6 +41,7 @@ export function Debts({ debts, supplierDebts }) {
   const patchName = record => isOweMe ? record : { ...record, name: record.supplierName || record.name };
 
   const noResultsFromSearch = search.trim() && filtered.length === 0;
+  const showSearch = (allRecords || []).length > 5;
 
   return (
     <div className="page">
@@ -55,7 +54,7 @@ export function Debts({ debts, supplierDebts }) {
           className={`sub-tab${isOweMe ? ' sub-tab--active' : ''}`}
           onClick={() => { setTab('owe-me'); setSearch(''); }}
         >
-          👥 Owe Me
+          Owe Me
           {debts.unpaid?.length > 0 && (
             <span className="sub-tab-badge">{debts.unpaid.length}</span>
           )}
@@ -64,7 +63,7 @@ export function Debts({ debts, supplierDebts }) {
           className={`sub-tab${!isOweMe ? ' sub-tab--active' : ''}`}
           onClick={() => { setTab('i-owe'); setSearch(''); }}
         >
-          💸 I Owe
+           I Owe
           {supplierDebts.unpaid?.length > 0 && (
             <span className="sub-tab-badge sub-tab-badge--orange">{supplierDebts.unpaid.length}</span>
           )}
@@ -79,11 +78,13 @@ export function Debts({ debts, supplierDebts }) {
       )}
 
       <div className="page-body">
-        <SearchBar
-          value={search}
-          onChange={setSearch}
-          placeholder={isOweMe ? 'Search people who owe you…' : 'Search suppliers…'}
-        />
+        {showSearch && (
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder={isOweMe ? 'Search people who owe you…' : 'Search suppliers…'}
+          />
+        )}
 
         {(allRecords || []).some(d => d.paid) && (
           <button

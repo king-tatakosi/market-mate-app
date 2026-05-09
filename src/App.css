@@ -45,6 +45,10 @@
 
   --nav: 68px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-ui:      'Manrope', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
 }
 
 /* ============================
@@ -97,7 +101,15 @@
 }
 
 .page-header--home {
-  background: var(--green);
+  background:
+    repeating-linear-gradient(
+      -55deg,
+      transparent 0px,
+      transparent 22px,
+      rgba(255,255,255,0.045) 22px,
+      rgba(255,255,255,0.045) 44px
+    ),
+    linear-gradient(150deg, #1a7840 0%, #2aaa58 48%, #1e9249 100%);
   border-bottom: none;
   padding: 24px 16px 20px;
   padding-top: calc(24px + env(safe-area-inset-top, 0px));
@@ -252,13 +264,14 @@
 .dash-card--clickable { cursor: pointer; }
 .dash-card--clickable:active { transform: scale(0.96); }
 
-.dash-card--green  { background: var(--green-light); }
-.dash-card--orange { background: var(--orange-light); }
-.dash-card--yellow { background: var(--yellow-light); }
-.dash-card--red    { background: var(--red-light); }
-.dash-card--blue   { background: var(--blue-light); }
+.dash-card--green  { background: linear-gradient(135deg, #e8fdf0 0%, #bbf7d0 100%); }
+.dash-card--orange { background: linear-gradient(135deg, #fff4ed 0%, #fed7aa 100%); }
+.dash-card--yellow { background: linear-gradient(135deg, #fefce8 0%, #fde68a 100%); }
+.dash-card--red    { background: linear-gradient(135deg, #fff1f1 0%, #fecaca 100%); }
+.dash-card--blue   { background: linear-gradient(135deg, #eff6ff 0%, #bfdbfe 100%); }
 
 .dash-card__icon { font-size: 24px; }
+.dash-card__icon--img { width: 26px; height: 26px; object-fit: contain; }
 
 .dash-card__value {
   font-size: 17px;
@@ -679,7 +692,14 @@
 
 .btn--ghost { background: var(--border-light); color: var(--text-2); }
 
-.btn--danger { color: var(--red); background: var(--red-light); }
+.btn--outline-danger {
+  background: transparent;
+  color: var(--red);
+  border: 2px solid var(--red);
+}
+
+.btn--danger      { color: var(--red);   background: var(--red-light); }
+.btn--danger-fill { color: white;        background: var(--red); }
 
 .btn--full { width: 100%; }
 
@@ -803,7 +823,15 @@
   box-shadow: 0 0 0 3px rgba(22,163,74,0.12);
 }
 
-.search-icon { font-size: 16px; color: var(--text-muted); flex-shrink: 0; }
+.search-icon {
+  font-size: 16px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  opacity: 0.5;
+}
 
 .search-input {
   flex: 1;
@@ -931,6 +959,15 @@
 
 .modal-hint strong { color: var(--text); }
 
+.stock-preview {
+  font-size: 14px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 8px 12px;
+  background: var(--border-light);
+  border-radius: var(--r-sm);
+}
+
 /* ============================
    FORMS
    ============================ */
@@ -1033,6 +1070,57 @@
 .install-banner__text span { opacity: 0.75; font-size: 12px; }
 
 .install-banner__actions { display: flex; gap: 6px; }
+
+/* ============================
+   TYPOGRAPHY ASSIGNMENTS
+   ============================ */
+
+/* Plus Jakarta Sans — display: headings, brand text, big numbers */
+.app-title         { font-family: var(--font-display); font-weight: 800; }
+.page-title        { font-family: var(--font-display); font-weight: 700; }
+.section-title     { font-family: var(--font-display); font-weight: 700; }
+.modal-title       { font-family: var(--font-display); font-weight: 700; }
+.home-empty h2     { font-family: var(--font-display); font-weight: 700; }
+.empty-state__title { font-family: var(--font-display); font-weight: 700; }
+.dash-card__value  { font-family: var(--font-display); font-weight: 800; }
+.debt-card__amount { font-family: var(--font-display); font-weight: 800; }
+.total-banner strong { font-family: var(--font-display); font-weight: 700; }
+
+/* Manrope — UI chrome: interactive elements, labels, navigation */
+.btn               { font-family: var(--font-ui); font-weight: 600; }
+.nav-tab__label    { font-family: var(--font-ui); font-weight: 600; }
+.sub-tab           { font-family: var(--font-ui); font-weight: 600; }
+.badge             { font-family: var(--font-ui); font-weight: 700; }
+.form-label        { font-family: var(--font-ui); font-weight: 600; }
+.page-count        { font-family: var(--font-ui); font-weight: 600; }
+.section-label     { font-family: var(--font-ui); font-weight: 700; }
+.dash-card__label  { font-family: var(--font-ui); font-weight: 600; }
+.detail-value      { font-family: var(--font-ui); font-weight: 600; }
+.toggle-paid       { font-family: var(--font-ui); font-weight: 600; }
+.see-all           { font-family: var(--font-ui); font-weight: 600; }
+.alert-card__name  { font-family: var(--font-ui); font-weight: 600; }
+.greeting          { font-family: var(--font-ui); font-weight: 500; }
+.progress-text     { font-family: var(--font-ui); font-weight: 500; }
+.nav-badge         { font-family: var(--font-ui); font-weight: 700; }
+.sub-tab-badge     { font-family: var(--font-ui); font-weight: 700; }
+.input-prefix      { font-family: var(--font-ui); font-weight: 600; }
+
+/* Inter — body content: readable at any size, great for data */
+.debt-card__name   { font-family: var(--font-body); font-weight: 600; }
+.debt-card__meta   { font-family: var(--font-body); font-weight: 400; }
+.product-card__name { font-family: var(--font-body); font-weight: 600; }
+.product-card__stock { font-family: var(--font-body); font-weight: 400; }
+.detail-label      { font-family: var(--font-body); font-weight: 400; }
+.note-box          { font-family: var(--font-body); font-weight: 400; }
+.payment-item      { font-family: var(--font-body); font-weight: 400; }
+.modal-hint        { font-family: var(--font-body); font-weight: 400; }
+.alert-card__detail { font-family: var(--font-body); font-weight: 400; }
+.empty-state__subtitle { font-family: var(--font-body); font-weight: 400; }
+.home-empty p      { font-family: var(--font-body); font-weight: 400; }
+.stock-preview     { font-family: var(--font-body); font-weight: 400; }
+.form-input        { font-family: var(--font-body); font-weight: 400; }
+.search-input      { font-family: var(--font-body); font-weight: 400; }
+.progress-text     { font-family: var(--font-body); }
 
 /* ============================
    UTILITIES

@@ -2,6 +2,10 @@ import { DashboardCard } from '../components/DashboardCard';
 import { DebtCard } from '../components/DebtCard';
 import { AlertCard } from '../components/AlertCard';
 import { formatCurrency } from '../utils/format';
+import debtsIcon from '../assets/debts.svg';
+import notificationIcon from '../assets/notification.svg';
+import productsIcon from '../assets/products.svg';
+import cartIcon from '../assets/cart.svg';
 
 export function Home({ debts, products, supplierDebts, onNavigate }) {
   const recentUnpaid = debts.unpaid.slice(0, 3);
@@ -25,34 +29,36 @@ export function Home({ debts, products, supplierDebts, onNavigate }) {
           <p className="greeting">{greeting()}</p>
           <h1 className="app-title">ShopMate</h1>
         </div>
-        <div className="logo-badge">🛒</div>
+        <div className="logo-badge">
+          <img src={cartIcon} alt="" width="32" height="32" />
+        </div>
       </div>
 
       <div className="section">
         <div className="dash-grid">
           <DashboardCard
-            icon="../assets/debts.svg"
-            label="People Owe Me"
+            icon={debtsIcon}
+            label="Total Amount Customers Owe Me"
             value={formatCurrency(debts.totalOwed)}
             color="green"
             onClick={() => onNavigate('debts')}
           />
           <DashboardCard
-            icon="../assets/debts.svg"
-            label="I Owe Suppliers"
+            icon={debtsIcon}
+            label="Total Amount I Owe Suppliers"
             value={formatCurrency(supplierDebts.totalIOwe)}
             color="orange"
             onClick={() => onNavigate('debts')}
           />
           <DashboardCard
-            icon="⚠️"
+            icon={notificationIcon}
             label="Expiring Soon"
             value={products.expiringSoon.length + products.expired.length}
             color={products.expired.length > 0 ? 'red' : 'yellow'}
             onClick={() => onNavigate('alerts')}
           />
           <DashboardCard
-            icon="📉"
+            icon={productsIcon}
             label="Low Stock"
             value={products.lowStock.length}
             color="blue"

@@ -29,18 +29,8 @@ export function Products({ products, addProduct, updateProduct, deleteProduct })
         <span className="page-count">{products.length} item{products.length !== 1 ? 's' : ''}</span>
       </div>
 
-      {products.length > 3 && (
-        <div className="page-body-top">
-          <SearchBar
-            value={search}
-            onChange={setSearch}
-            placeholder="Search products…"
-          />
-        </div>
-      )}
-
       <div className="page-body">
-        {products.length <= 3 && products.length > 0 && (
+        {products.length > 7 && (
           <SearchBar
             value={search}
             onChange={setSearch}

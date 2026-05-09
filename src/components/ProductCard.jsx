@@ -2,35 +2,62 @@ import { useState } from 'react';
 import { formatCurrency, formatExpiryDate, daysUntilExpiry } from '../utils/format';
 import { Modal } from './Modal';
 
-function UpdateStockModal({ product, onClose, onUpdate }) {
-  const [qty, setQty] = useState(String(product.quantity));
+function StockModal({ product, mode, onClose, onUpdate }) {
+  const isAdd = mode === 'add';
+  const [qty, setQty] = useState('');
   const [err, setErr] = useState('');
 
   const handleSubmit = e => {
     e.preventDefault();
     const val = parseInt(qty);
-    if (isNaN(val) || val < 0) { setErr('Enter a valid number'); return; }
-    onUpdate(val);
+    if (isNaN(val) || val <= 0) { setErr('Enter a valid number greater than 0'); return; }
+    if (!isAdd && val > product.quantity) {
+      setErr(`Cannot remove more than current stock (${product.quantity})`);
+      return;
+    }
+    const newQty = isAdd ? product.quantity + val : product.quantity - val;
+    onUpdate(newQty);
   };
 
   return (
-    <Modal title="Update Stock" onClose={onClose}>
-      <p className="modal-hint">Current stock: <strong>{product.quantity} {product.unit || 'pcs'}</strong></p>
+    <Modal title={isAdd ? 'Add Stock' : 'Remove Stock'} onClose={onClose}>
+      <p className="modal-hint">
+        Current stock: <strong>{product.quantity} {product.unit || 'pcs'}</strong>
+      </p>
       <form onSubmit={handleSubmit} className="form">
         <div className="form-field">
-          <label className="form-label">New quantity</label>
+          <label className="form-label">
+            {isAdd ? 'How many are you adding?' : 'How many are you removing?'}
+          </label>
           <input
             className="form-input"
             type="number"
             inputMode="numeric"
+            placeholder="0"
             value={qty}
             onChange={e => { setQty(e.target.value); setErr(''); }}
-            min="0"
+            min="1"
             autoFocus
           />
           {err && <span className="form-error">{err}</span>}
         </div>
-        <button className="btn btn--primary btn--full" type="submit">Update Stock</button>
+        {qty && !err && parseInt(qty) > 0 && (
+          <p className="stock-preview">
+            New stock will be:{' '}
+            <strong>
+              {isAdd
+                ? product.quantity + parseInt(qty)
+                : product.quantity - parseInt(qty)
+              } {product.unit || 'pcs'}
+            </strong>
+          </p>
+        )}
+        <button
+          className={`btn btn--full${isAdd ? ' btn--primary' : ' btn--danger-fill'}`}
+          type="submit"
+        >
+          {isAdd ? '+ Confirm Add Stock' : '− Confirm Remove Stock'}
+        </button>
       </form>
     </Modal>
   );
@@ -38,7 +65,7 @@ function UpdateStockModal({ product, onClose, onUpdate }) {
 
 export function ProductCard({ product, onUpdate, onDelete }) {
   const [expanded, setExpanded] = useState(false);
-  const [showStock, setShowStock] = useState(false);
+  const [stockMode, setStockMode] = useState(null); // 'add' | 'remove' | null
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const daysLeft = daysUntilExpiry(product.expiryDate);
@@ -108,13 +135,16 @@ export function ProductCard({ product, onUpdate, onDelete }) {
             )}
 
             <div className="product-card__actions">
-              <button className="btn btn--primary" onClick={() => setShowStock(true)}>
-                📊 Update Stock
+              <button className="btn btn--primary" onClick={() => setStockMode('add')}>
+                + Add Stock
+              </button>
+              <button className="btn btn--outline-danger" onClick={() => setStockMode('remove')}>
+                − Remove Stock
               </button>
             </div>
 
             <button
-              className={`btn btn--ghost btn--sm${confirmDelete ? ' btn--danger' : ''}`}
+              className={`btn btn--ghost btn--sm text-danger${confirmDelete ? ' btn--danger' : ''}`}
               onClick={handleDelete}
             >
               {confirmDelete ? '⚠️ Tap again to delete' : '🗑 Remove Product'}
@@ -123,11 +153,15 @@ export function ProductCard({ product, onUpdate, onDelete }) {
         )}
       </div>
 
-      {showStock && (
-        <UpdateStockModal
+      {stockMode && (
+        <StockModal
           product={product}
-          onClose={() => setShowStock(false)}
-          onUpdate={qty => { onUpdate(product.id, { quantity: qty }); setShowStock(false); }}
+          mode={stockMode}
+          onClose={() => setStockMode(null)}
+          onUpdate={newQty => {
+            onUpdate(product.id, { quantity: newQty });
+            setStockMode(null);
+          }}
         />
       )}
     </>

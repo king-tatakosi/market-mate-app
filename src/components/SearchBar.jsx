@@ -1,7 +1,8 @@
+import searchIcon from '../assets/search.svg';
 export function SearchBar({ value, onChange, placeholder = 'Search...', autoFocus = false }) {
   return (
     <div className="search-bar">
-      <span className="search-icon">🔍</span>
+      <img className="search-icon" src={searchIcon} alt="Search" />
       <input
         className="search-input"
         type="search"

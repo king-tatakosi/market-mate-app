@@ -151,7 +151,7 @@ export function DebtCard({ debt, onRecordPayment, onMarkPaid, onDelete }) {
             )}
 
             <button
-              className={`btn btn--ghost btn--sm${confirmDelete ? ' btn--danger' : ''}`}
+              className={`btn btn--ghost btn--sm text-danger${confirmDelete ? ' btn--danger' : ''}`}
               onClick={handleDelete}
             >
               {confirmDelete ? '⚠️ Tap again to delete' : '🗑 Delete Record'}
