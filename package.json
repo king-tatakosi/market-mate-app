@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && cd dist && git init && git add -A && git commit -m \"deploy\" && git push --force https://github.com/king-tatakosi/vendapal-app.git HEAD:gh-pages && cd .. && rmdir /s /q dist\\.git"
   },
   "dependencies": {
     "react": "^19.2.5",
