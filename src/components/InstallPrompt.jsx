@@ -1,44 +1,68 @@
 import { useState, useEffect } from 'react';
 
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone =
+  window.navigator.standalone === true ||
+  window.matchMedia('(display-mode: standalone)').matches;
+
 export function InstallPrompt() {
-  const [prompt, setPrompt] = useState(null);
-  const [dismissed, setDismissed] = useState(
-    () => localStorage.getItem('install-dismissed') === '1'
-  );
+  const [androidPrompt, setAndroidPrompt] = useState(null);
+  const [dismissed, setDismissed] = useState(() => {
+    const ts = localStorage.getItem('install-dismissed');
+    if (!ts) return false;
+    return Date.now() - parseInt(ts, 10) < 30 * 24 * 60 * 60 * 1000;
+  });
 
   useEffect(() => {
+    if (isIOS) return;
     const handler = e => {
       e.preventDefault();
-      setPrompt(e);
+      setAndroidPrompt(e);
     };
     window.addEventListener('beforeinstallprompt', handler);
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
-  if (!prompt || dismissed) return null;
+  if (isStandalone || dismissed) return null;
+  if (!isIOS && !androidPrompt) return null;
 
-  const install = async () => {
-    prompt.prompt();
-    const { outcome } = await prompt.userChoice;
-    if (outcome === 'accepted') setPrompt(null);
+  const installAndroid = async () => {
+    androidPrompt.prompt();
+    const { outcome } = await androidPrompt.userChoice;
+    if (outcome === 'accepted') setAndroidPrompt(null);
     else dismiss();
   };
 
   const dismiss = () => {
     setDismissed(true);
-    localStorage.setItem('install-dismissed', '1');
+    localStorage.setItem('install-dismissed', Date.now().toString());
   };
 
   return (
     <div className="install-banner">
       <div className="install-banner__icon">📲</div>
       <div className="install-banner__text">
-        <strong>Add VendaPal to your phone</strong>
-        <span>Use it anytime, even without internet</span>
+        {isIOS ? (
+          <>
+            <strong>Add VendaPal to your home screen</strong>
+            <span>Tap the <strong>Share</strong> button then <strong>Add to Home Screen</strong></span>
+          </>
+        ) : (
+          <>
+            <strong>Add VendaPal to your phone</strong>
+            <span>Use it anytime, even without internet</span>
+          </>
+        )}
       </div>
       <div className="install-banner__actions">
-        <button className="btn btn--primary btn--sm" onClick={install}>Install</button>
-        <button className="btn btn--ghost btn--sm" onClick={dismiss}>Later</button>
+        {isIOS ? (
+          <button className="btn btn--ghost btn--sm" onClick={dismiss}>Got it</button>
+        ) : (
+          <>
+            <button className="btn btn--primary btn--sm" onClick={installAndroid}>Install</button>
+            <button className="btn btn--ghost btn--sm" onClick={dismiss}>Later</button>
+          </>
+        )}
       </div>
     </div>
   );

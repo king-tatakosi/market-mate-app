@@ -44,7 +44,7 @@ export function useProducts() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const soonLimit = new Date(today);
-  soonLimit.setDate(soonLimit.getDate() + 7);
+  soonLimit.setDate(soonLimit.getDate() + 60);
 
   const lowStock = products.filter(p =>
     p.quantity !== undefined && p.minStock !== undefined && +p.quantity <= +p.minStock

@@ -54,7 +54,7 @@ export function Debts({ debts, supplierDebts }) {
           className={`sub-tab${isOweMe ? ' sub-tab--active' : ''}`}
           onClick={() => { setTab('owe-me'); setSearch(''); }}
         >
-          Owe Me
+          Customers
           {debts.unpaid?.length > 0 && (
             <span className="sub-tab-badge">{debts.unpaid.length}</span>
           )}
@@ -63,7 +63,7 @@ export function Debts({ debts, supplierDebts }) {
           className={`sub-tab${!isOweMe ? ' sub-tab--active' : ''}`}
           onClick={() => { setTab('i-owe'); setSearch(''); }}
         >
-           I Owe
+          Suppliers
           {supplierDebts.unpaid?.length > 0 && (
             <span className="sub-tab-badge sub-tab-badge--orange">{supplierDebts.unpaid.length}</span>
           )}

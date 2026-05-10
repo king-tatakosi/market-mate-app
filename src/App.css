@@ -1147,6 +1147,50 @@
 .progress-text     { font-family: var(--font-body); }
 
 /* ============================
+   ERROR SCREEN
+   ============================ */
+.error-screen {
+  min-height: 100dvh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  gap: 12px;
+  text-align: center;
+  background: #F0FDF4;
+}
+
+.error-screen__icon { font-size: 56px; }
+.error-screen__title { font-size: 22px; font-weight: 700; color: #111827; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+.error-screen__msg { font-size: 15px; color: #6B7280; margin-bottom: 8px; }
+
+/* ============================
+   EXPORT BUTTON
+   ============================ */
+.export-btn {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--green);
+  background: var(--green-light);
+  border: 1.5px solid var(--green);
+  border-radius: var(--r-sm);
+  padding: 6px 12px;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.export-btn:active { opacity: 0.7; }
+
+.page-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ============================
    UTILITIES
    ============================ */
 .text-danger  { color: var(--red); }

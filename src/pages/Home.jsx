@@ -2,8 +2,8 @@ import { DashboardCard } from '../components/DashboardCard';
 import { DebtCard } from '../components/DebtCard';
 import { AlertCard } from '../components/AlertCard';
 import { formatCurrency } from '../utils/format';
-import debtsIcon from '../assets/debts.svg';
-import notificationIcon from '../assets/notification.svg';
+import dollarIcon from '../assets/dollar.svg';
+import alertIcon from '../assets/alert.svg';
 import productsIcon from '../assets/products.svg';
 import cartIcon from '../assets/cart.svg';
 
@@ -37,21 +37,21 @@ export function Home({ debts, products, supplierDebts, onNavigate }) {
       <div className="section">
         <div className="dash-grid">
           <DashboardCard
-            icon={debtsIcon}
+            icon={dollarIcon}
             label="Total Amount Customers Owe Me"
             value={formatCurrency(debts.totalOwed)}
             color="green"
             onClick={() => onNavigate('debts')}
           />
           <DashboardCard
-            icon={debtsIcon}
+            icon={dollarIcon}
             label="Total Amount I Owe Suppliers"
             value={formatCurrency(supplierDebts.totalIOwe)}
             color="orange"
             onClick={() => onNavigate('debts')}
           />
           <DashboardCard
-            icon={notificationIcon}
+            icon={alertIcon}
             label="Expiring Soon"
             value={products.expiringSoon.length + products.expired.length}
             color={products.expired.length > 0 ? 'red' : 'yellow'}
