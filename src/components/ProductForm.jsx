@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 export function ProductForm({ onSubmit, onCancel }) {
   const [form, setForm] = useState({
-    name: '', quantity: '', unit: 'pieces', minStock: '', expiryDate: '', price: '',
+    name: '', quantity: '', unit: 'packs', minStock: '', expiryDate: '', price: '',
   });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);

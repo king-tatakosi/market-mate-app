@@ -1,5 +1,5 @@
-const CACHE = 'shopmate-v1';
-const PRECACHE = ['/', '/index.html', '/manifest.json', '/icon.svg', '/icon-maskable.svg'];
+const CACHE = 'vendapal-v1';
+const PRECACHE = ['/vendapal-app/', '/vendapal-app/index.html', '/vendapal-app/manifest.json', '/vendapal-app/icon.svg', '/vendapal-app/icon-maskable.svg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(PRECACHE)));
