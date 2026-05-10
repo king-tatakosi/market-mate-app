@@ -4,20 +4,55 @@ import { SearchBar } from '../components/SearchBar';
 import { EmptyState } from '../components/EmptyState';
 import { Modal } from '../components/Modal';
 import { ProductForm } from '../components/ProductForm';
+import { useToast } from '../context/ToastContext';
 
 export function Products({ products, addProduct, updateProduct, deleteProduct }) {
+  const showToast = useToast();
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [undoQueue, setUndoQueue] = useState([]);
+
+  const visible = products.filter(p => !undoQueue.some(u => u.id === p.id));
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return products;
-    return products.filter(p => p.name.toLowerCase().includes(q));
-  }, [products, search]);
+    if (!q) return visible;
+    return visible.filter(p => p.name.toLowerCase().includes(q));
+  }, [visible, search]);
 
   const handleAdd = async data => {
     await addProduct(data);
     setShowAdd(false);
+    showToast('Product added ✓');
+  };
+
+  const handleEdit = product => setEditingProduct(product);
+
+  const handleUpdate = async data => {
+    await updateProduct(editingProduct.id, data);
+    setEditingProduct(null);
+    showToast('Product updated ✓');
+  };
+
+  const handleDelete = id => {
+    const timeoutId = setTimeout(async () => {
+      await deleteProduct(id);
+      setUndoQueue(q => q.filter(u => u.id !== id));
+    }, 5000);
+    setUndoQueue(q => [...q, { id, timeoutId }]);
+    showToast('Product deleted', {
+      label: 'Undo',
+      onClick: () => {
+        clearTimeout(timeoutId);
+        setUndoQueue(q => q.filter(u => u.id !== id));
+      },
+    });
+  };
+
+  const handleStockUpdate = async (id, updates) => {
+    await updateProduct(id, updates);
+    showToast('Stock updated ✓');
   };
 
   const noResult = search.trim() && filtered.length === 0;
@@ -31,11 +66,7 @@ export function Products({ products, addProduct, updateProduct, deleteProduct })
 
       <div className="page-body">
         {products.length > 7 && (
-          <SearchBar
-            value={search}
-            onChange={setSearch}
-            placeholder="Search products…"
-          />
+          <SearchBar value={search} onChange={setSearch} placeholder="Search products…" />
         )}
 
         <div className="card-list">
@@ -43,8 +74,9 @@ export function Products({ products, addProduct, updateProduct, deleteProduct })
             <ProductCard
               key={p.id}
               product={p}
-              onUpdate={updateProduct}
-              onDelete={deleteProduct}
+              onUpdate={handleStockUpdate}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
             />
           ))}
         </div>
@@ -70,13 +102,21 @@ export function Products({ products, addProduct, updateProduct, deleteProduct })
         )}
       </div>
 
-      <button className="fab" onClick={() => setShowAdd(true)} aria-label="Add product">
-        +
-      </button>
+      <button className="fab" onClick={() => setShowAdd(true)} aria-label="Add product">+</button>
 
       {showAdd && (
         <Modal title="Add New Product" onClose={() => setShowAdd(false)}>
           <ProductForm onSubmit={handleAdd} onCancel={() => setShowAdd(false)} />
+        </Modal>
+      )}
+
+      {editingProduct && (
+        <Modal title="Edit Product" onClose={() => setEditingProduct(null)}>
+          <ProductForm
+            onSubmit={handleUpdate}
+            onCancel={() => setEditingProduct(null)}
+            initialValues={editingProduct}
+          />
         </Modal>
       )}
     </div>

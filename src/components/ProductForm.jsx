@@ -1,10 +1,16 @@
 import { useState } from 'react';
 
-export function ProductForm({ onSubmit, onCancel }) {
+export function ProductForm({ onSubmit, onCancel, initialValues = null }) {
+  const isEdit = initialValues != null;
   const [form, setForm] = useState({
-    name: '', quantity: '', unit: 'packs', minStock: '', expiryDate: '', price: '',
+    name:       initialValues?.name ?? '',
+    quantity:   initialValues?.quantity != null ? String(initialValues.quantity) : '',
+    unit:       initialValues?.unit ?? 'packs',
+    minStock:   initialValues?.minStock != null ? String(initialValues.minStock) : '',
+    expiryDate: initialValues?.expiryDate ?? '',
+    price:      initialValues?.price != null ? String(initialValues.price) : '',
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({}); 
   const [saving, setSaving] = useState(false);
 
   const set = (key, val) => {
@@ -130,7 +136,7 @@ export function ProductForm({ onSubmit, onCancel }) {
 
       <div className="form-actions">
         <button className="btn btn--primary btn--full" type="submit" disabled={saving}>
-          {saving ? 'Saving…' : '✓ Add Product'}
+          {saving ? 'Saving…' : isEdit ? '✓ Save Changes' : '✓ Add Product'}
         </button>
         <button className="btn btn--ghost btn--full" type="button" onClick={onCancel}>
           Cancel

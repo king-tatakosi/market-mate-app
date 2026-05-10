@@ -55,6 +55,14 @@ export function useDebts() {
     setDebts(prev => prev.map(d => d.id === id ? updated : d));
   };
 
+  const updateDebt = async (id, data) => {
+    const debt = debts.find(d => d.id === id);
+    if (!debt) return;
+    const updated = { ...debt, ...data, updatedAt: new Date().toISOString() };
+    await db.put('debts', updated);
+    setDebts(prev => prev.map(d => d.id === id ? updated : d));
+  };
+
   const deleteDebt = async id => {
     await db.remove('debts', id);
     setDebts(prev => prev.filter(d => d.id !== id));
@@ -63,5 +71,5 @@ export function useDebts() {
   const unpaid = debts.filter(d => !d.paid);
   const totalOwed = unpaid.reduce((s, d) => s + Math.max(0, d.amount - (d.paidAmount || 0)), 0);
 
-  return { debts, unpaid, totalOwed, loading, addDebt, recordPayment, markAsPaid, deleteDebt };
+  return { debts, unpaid, totalOwed, loading, addDebt, updateDebt, recordPayment, markAsPaid, deleteDebt };
 }

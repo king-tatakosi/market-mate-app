@@ -2,9 +2,15 @@ import { useState } from 'react';
 
 const canPickContact = 'contacts' in navigator && 'ContactsManager' in window;
 
-export function DebtForm({ onSubmit, onCancel, mode = 'owe-me' }) {
+export function DebtForm({ onSubmit, onCancel, mode = 'owe-me', initialValues = null }) {
   const isOweMe = mode === 'owe-me';
-  const [form, setForm] = useState({ name: '', phone: '', amount: '', note: '' });
+  const isEdit = initialValues?.amount != null;
+  const [form, setForm] = useState({
+    name: initialValues?.name ?? '',
+    phone: initialValues?.phone ?? '',
+    amount: initialValues?.amount != null ? String(initialValues.amount) : '',
+    note: initialValues?.note ?? '',
+  });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [picking, setPicking] = useState(false);
@@ -132,7 +138,7 @@ export function DebtForm({ onSubmit, onCancel, mode = 'owe-me' }) {
 
       <div className="form-actions">
         <button className="btn btn--primary btn--full" type="submit" disabled={saving}>
-          {saving ? 'Saving…' : isOweMe ? '✓ Save Debt Record' : '✓ Save What I Owe'}
+          {saving ? 'Saving…' : isEdit ? '✓ Save Changes' : isOweMe ? '✓ Save Debt Record' : '✓ Save What I Owe'}
         </button>
         <button className="btn btn--ghost btn--full" type="button" onClick={onCancel}>
           Cancel

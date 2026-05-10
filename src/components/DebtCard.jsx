@@ -53,10 +53,9 @@ function PaymentModal({ debt, onClose, onSubmit }) {
   );
 }
 
-export function DebtCard({ debt, onRecordPayment, onMarkPaid, onDelete }) {
+export function DebtCard({ debt, onRecordPayment, onMarkPaid, onDelete, onNewDebt, onEdit }) {
   const [expanded, setExpanded] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const remaining = Math.max(0, debt.amount - (debt.paidAmount || 0));
   const progress = debt.amount > 0 ? Math.min((debt.paidAmount || 0) / debt.amount, 1) : 0;
@@ -64,15 +63,6 @@ export function DebtCard({ debt, onRecordPayment, onMarkPaid, onDelete }) {
   const handlePayment = (amount, note) => {
     onRecordPayment(debt.id, amount, note);
     setShowPayment(false);
-  };
-
-  const handleDelete = () => {
-    if (confirmDelete) {
-      onDelete(debt.id);
-    } else {
-      setConfirmDelete(true);
-      setTimeout(() => setConfirmDelete(false), 3000);
-    }
   };
 
   return (
@@ -139,7 +129,11 @@ export function DebtCard({ debt, onRecordPayment, onMarkPaid, onDelete }) {
               </div>
             )}
 
-            {!debt.paid && (
+            {debt.paid ? (
+              <button className="btn btn--outline btn--full" onClick={() => onNewDebt?.(debt)}>
+                + New Debt for {debt.name.split(' ')[0]}
+              </button>
+            ) : (
               <div className="debt-card__actions">
                 <button className="btn btn--primary" onClick={() => setShowPayment(true)}>
                   💰 Record Payment
@@ -150,12 +144,16 @@ export function DebtCard({ debt, onRecordPayment, onMarkPaid, onDelete }) {
               </div>
             )}
 
-            <button
-              className={`btn btn--ghost btn--sm text-danger${confirmDelete ? ' btn--danger' : ''}`}
-              onClick={handleDelete}
-            >
-              {confirmDelete ? '⚠️ Tap again to delete' : '🗑 Delete Record'}
-            </button>
+            <div className="debt-card__actions">
+              {onEdit && (
+                <button className="btn btn--ghost btn--sm" onClick={() => onEdit(debt)}>
+                  ✏️ Edit
+                </button>
+              )}
+              <button className="btn btn--ghost btn--sm text-danger" onClick={() => onDelete?.(debt.id)}>
+                🗑 Delete
+              </button>
+            </div>
           </div>
         )}
       </div>

@@ -63,10 +63,9 @@ function StockModal({ product, mode, onClose, onUpdate }) {
   );
 }
 
-export function ProductCard({ product, onUpdate, onDelete }) {
+export function ProductCard({ product, onUpdate, onDelete, onEdit }) {
   const [expanded, setExpanded] = useState(false);
-  const [stockMode, setStockMode] = useState(null); // 'add' | 'remove' | null
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [stockMode, setStockMode] = useState(null);
 
   const daysLeft = daysUntilExpiry(product.expiryDate);
   const isExpired = daysLeft !== null && daysLeft < 0;
@@ -77,14 +76,6 @@ export function ProductCard({ product, onUpdate, onDelete }) {
     : isExpiringSoon ? 'product-card--expiring'
     : isLowStock ? 'product-card--low'
     : '';
-
-  const handleDelete = () => {
-    if (confirmDelete) onDelete(product.id);
-    else {
-      setConfirmDelete(true);
-      setTimeout(() => setConfirmDelete(false), 3000);
-    }
-  };
 
   return (
     <>
@@ -143,12 +134,16 @@ export function ProductCard({ product, onUpdate, onDelete }) {
               </button>
             </div>
 
-            <button
-              className={`btn btn--ghost btn--sm text-danger${confirmDelete ? ' btn--danger' : ''}`}
-              onClick={handleDelete}
-            >
-              {confirmDelete ? '⚠️ Tap again to delete' : '🗑 Remove Product'}
-            </button>
+            <div className="product-card__actions">
+              {onEdit && (
+                <button className="btn btn--ghost btn--sm" onClick={() => onEdit(product)}>
+                  ✏️ Edit
+                </button>
+              )}
+              <button className="btn btn--ghost btn--sm text-danger" onClick={() => onDelete?.(product.id)}>
+                🗑 Delete
+              </button>
+            </div>
           </div>
         )}
       </div>

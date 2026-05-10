@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ToastProvider } from './context/ToastContext';
 import { BottomNav } from './components/BottomNav';
 import { InstallPrompt } from './components/InstallPrompt';
 import { Home } from './pages/Home';
@@ -21,6 +22,7 @@ export default function App() {
     products.expired.length + products.expiringSoon.length + products.lowStock.length;
 
   return (
+    <ToastProvider>
     <div className="app">
       <InstallPrompt />
       <main className="app-main">
@@ -49,5 +51,6 @@ export default function App() {
       </main>
       <BottomNav active={tab} onChange={setTab} alertCount={alertCount} />
     </div>
+    </ToastProvider>
   );
 }

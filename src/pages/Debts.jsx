@@ -5,12 +5,17 @@ import { EmptyState } from '../components/EmptyState';
 import { Modal } from '../components/Modal';
 import { DebtForm } from '../components/DebtForm';
 import { formatCurrency } from '../utils/format';
+import { useToast } from '../context/ToastContext';
 
 export function Debts({ debts, supplierDebts }) {
+  const showToast = useToast();
   const [tab, setTab] = useState('owe-me');
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
-  const [showPaid, setShowPaid] = useState(false);
+  const [showPaid, setShowPaid] = useState(true);
+  const [prefill, setPrefill] = useState(null);
+  const [editingDebt, setEditingDebt] = useState(null);
+  const [undoQueue, setUndoQueue] = useState([]);
 
   const isOweMe = tab === 'owe-me';
   const source = isOweMe ? debts : supplierDebts;
@@ -20,23 +25,64 @@ export function Debts({ debts, supplierDebts }) {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     const nameKey = isOweMe ? 'name' : 'supplierName';
-    const list = allRecords || [];
+    const list = (allRecords || []).filter(r => !undoQueue.some(u => u.id === r.id));
     const unpaid = list.filter(d => !d.paid);
     const shown = showPaid ? list : unpaid;
     if (!q) return shown;
     return shown.filter(d => (d[nameKey] || d.name || '').toLowerCase().includes(q));
-  }, [allRecords, search, showPaid, isOweMe]);
+  }, [allRecords, search, showPaid, isOweMe, undoQueue]);
 
   const handleAdd = async data => {
     const payload = isOweMe ? data : { ...data, supplierName: data.name };
     if (isOweMe) await debts.addDebt(payload);
     else await supplierDebts.addSupplierDebt(payload);
     setShowAdd(false);
+    setPrefill(null);
+    showToast('Record saved ✓');
   };
 
-  const handleRecordPayment = isOweMe ? debts.recordPayment : supplierDebts.recordPayment;
-  const handleMarkPaid = isOweMe ? debts.markAsPaid : supplierDebts.markAsPaid;
-  const handleDelete = isOweMe ? debts.deleteDebt : supplierDebts.deleteSupplierDebt;
+  const handleNewDebt = debt => {
+    setPrefill({ name: debt.name, phone: debt.phone });
+    setShowAdd(true);
+  };
+
+  const handleEdit = debt => setEditingDebt(debt);
+
+  const handleUpdate = async data => {
+    const payload = isOweMe ? data : { ...data, supplierName: data.name };
+    if (isOweMe) await debts.updateDebt(editingDebt.id, payload);
+    else await supplierDebts.updateSupplierDebt(editingDebt.id, payload);
+    setEditingDebt(null);
+    showToast('Record updated ✓');
+  };
+
+  const handleDelete = id => {
+    const doDelete = isOweMe ? debts.deleteDebt : supplierDebts.deleteSupplierDebt;
+    const timeoutId = setTimeout(async () => {
+      await doDelete(id);
+      setUndoQueue(q => q.filter(u => u.id !== id));
+    }, 5000);
+    setUndoQueue(q => [...q, { id, timeoutId }]);
+    showToast('Record deleted', {
+      label: 'Undo',
+      onClick: () => {
+        clearTimeout(timeoutId);
+        setUndoQueue(q => q.filter(u => u.id !== id));
+      },
+    });
+  };
+
+  const handleRecordPayment = async (id, amount, note) => {
+    const fn = isOweMe ? debts.recordPayment : supplierDebts.recordPayment;
+    await fn(id, amount, note);
+    showToast('Payment recorded ✓');
+  };
+
+  const handleMarkPaid = async id => {
+    const fn = isOweMe ? debts.markAsPaid : supplierDebts.markAsPaid;
+    await fn(id);
+    showToast('Marked as paid ✓');
+  };
 
   const patchName = record => isOweMe ? record : { ...record, name: record.supplierName || record.name };
 
@@ -82,15 +128,12 @@ export function Debts({ debts, supplierDebts }) {
           <SearchBar
             value={search}
             onChange={setSearch}
-            placeholder={isOweMe ? 'Search people who owe you…' : 'Search suppliers…'}
+            placeholder={isOweMe ? 'Search customers…' : 'Search suppliers…'}
           />
         )}
 
         {(allRecords || []).some(d => d.paid) && (
-          <button
-            className="toggle-paid"
-            onClick={() => setShowPaid(x => !x)}
-          >
+          <button className="toggle-paid" onClick={() => setShowPaid(x => !x)}>
             {showPaid ? '👁 Hide paid records' : '👁 Show paid records'}
           </button>
         )}
@@ -103,6 +146,8 @@ export function Debts({ debts, supplierDebts }) {
               onRecordPayment={handleRecordPayment}
               onMarkPaid={handleMarkPaid}
               onDelete={handleDelete}
+              onNewDebt={handleNewDebt}
+              onEdit={handleEdit}
             />
           ))}
         </div>
@@ -128,19 +173,34 @@ export function Debts({ debts, supplierDebts }) {
         )}
       </div>
 
-      <button className="fab" onClick={() => setShowAdd(true)} aria-label="Add new record">
-        +
-      </button>
+      <button className="fab" onClick={() => setShowAdd(true)} aria-label="Add new record">+</button>
 
       {showAdd && (
         <Modal
           title={isOweMe ? 'New Debt Record' : 'Add What I Owe'}
-          onClose={() => setShowAdd(false)}
+          onClose={() => { setShowAdd(false); setPrefill(null); }}
         >
           <DebtForm
             mode={tab}
             onSubmit={handleAdd}
-            onCancel={() => setShowAdd(false)}
+            onCancel={() => { setShowAdd(false); setPrefill(null); }}
+            initialValues={prefill}
+          />
+        </Modal>
+      )}
+
+      {editingDebt && (
+        <Modal title="Edit Record" onClose={() => setEditingDebt(null)}>
+          <DebtForm
+            mode={tab}
+            onSubmit={handleUpdate}
+            onCancel={() => setEditingDebt(null)}
+            initialValues={{
+              name: editingDebt.name,
+              phone: editingDebt.phone,
+              amount: editingDebt.amount,
+              note: editingDebt.note,
+            }}
           />
         </Modal>
       )}
