@@ -14,3 +14,9 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => {});
   });
 }
+
+if (navigator.storage?.persist) {
+  navigator.storage.persisted().then(persisted => {
+    if (!persisted) navigator.storage.persist();
+  });
+}

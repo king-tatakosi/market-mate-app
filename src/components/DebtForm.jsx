@@ -1,14 +1,34 @@
 import { useState } from 'react';
 
+const canPickContact = 'contacts' in navigator && 'ContactsManager' in window;
+
 export function DebtForm({ onSubmit, onCancel, mode = 'owe-me' }) {
   const isOweMe = mode === 'owe-me';
   const [form, setForm] = useState({ name: '', phone: '', amount: '', note: '' });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
+  const [picking, setPicking] = useState(false);
 
   const set = (key, val) => {
     setForm(f => ({ ...f, [key]: val }));
     setErrors(e => ({ ...e, [key]: '' }));
+  };
+
+  const pickContact = async () => {
+    setPicking(true);
+    try {
+      const results = await navigator.contacts.select(['name', 'tel'], { multiple: false });
+      if (!results.length) return;
+      const contact = results[0];
+      const phone = contact.tel?.[0] ?? '';
+      const name  = contact.name?.[0] ?? '';
+      if (phone) set('phone', phone.replace(/\s+/g, ''));
+      if (name && !form.name.trim()) set('name', name);
+    } catch {
+      // user cancelled or permission denied — silent
+    } finally {
+      setPicking(false);
+    }
   };
 
   const validate = () => {
@@ -74,7 +94,20 @@ export function DebtForm({ onSubmit, onCancel, mode = 'owe-me' }) {
       </div>
 
       <div className="form-field">
-        <label className="form-label">Phone number <span className="optional">(optional)</span></label>
+        <div className="form-label-row">
+          <label className="form-label">Phone number <span className="optional">(optional)</span></label>
+          {canPickContact && (
+            <button
+              type="button"
+              className="contact-pick-btn"
+              onClick={pickContact}
+              disabled={picking}
+              aria-label="Pick from contacts"
+            >
+              {picking ? 'Opening…' : '➕ Pick from Contacts'}
+            </button>
+          )}
+        </div>
         <input
           className="form-input"
           type="tel"

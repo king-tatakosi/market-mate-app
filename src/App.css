@@ -980,6 +980,30 @@
 
 .form-label { font-size: 14px; font-weight: 600; color: var(--text-2); }
 
+.form-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.contact-pick-btn {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #16A34A, #0EA5E9);
+  padding: 5px 12px;
+  border-radius: var(--r-full);
+  white-space: nowrap;
+  transition: opacity 0.15s, transform 0.1s;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.35);
+  letter-spacing: 0.1px;
+}
+
+.contact-pick-btn:active { opacity: 0.85; transform: scale(0.97); }
+.contact-pick-btn:disabled { opacity: 0.5; }
+
 .form-input {
   padding: 13px 14px;
   border: 1.5px solid var(--border);
