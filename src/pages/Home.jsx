@@ -27,7 +27,7 @@ export function Home({ debts, products, supplierDebts, onNavigate }) {
       <div className="page-header page-header--home">
         <div>
           <p className="greeting">{greeting()}</p>
-          <h1 className="app-title">ShopMate</h1>
+          <h1 className="app-title">VendaPal</h1>
         </div>
         <div className="logo-badge">
           <img src={cartIcon} alt="" width="32" height="32" />

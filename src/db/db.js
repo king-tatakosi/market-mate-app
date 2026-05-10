@@ -1,4 +1,4 @@
-const DB_NAME = 'shopmate_db';
+const DB_NAME = 'vendapal_db';
 const DB_VERSION = 1;
 const STORES = ['debts', 'products', 'supplier_debts'];
 

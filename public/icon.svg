@@ -4,5 +4,5 @@
   <path d="M196 220 C196 168 316 168 316 220" fill="none" stroke="white" stroke-width="26" stroke-linecap="round"/>
   <circle cx="222" cy="306" r="16" fill="#16A34A"/>
   <circle cx="290" cy="306" r="16" fill="#16A34A"/>
-  <text x="256" y="388" font-family="Arial,sans-serif" font-weight="900" font-size="44" fill="#16A34A" text-anchor="middle">ShopMate</text>
+  <text x="256" y="388" font-family="Arial,sans-serif" font-weight="900" font-size="44" fill="#16A34A" text-anchor="middle">VendaPal</text>
 </svg>

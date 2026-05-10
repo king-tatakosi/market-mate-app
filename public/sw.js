@@ -1,4 +1,4 @@
-const CACHE = 'shopmate-v1';
+const CACHE = 'vendapal-v1';
 const PRECACHE = ['/', '/index.html', '/manifest.json', '/icon.svg', '/icon-maskable.svg'];
 
 self.addEventListener('install', e => {

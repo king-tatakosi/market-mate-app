@@ -33,7 +33,7 @@ export function InstallPrompt() {
     <div className="install-banner">
       <div className="install-banner__icon">📲</div>
       <div className="install-banner__text">
-        <strong>Add ShopMate to your phone</strong>
+        <strong>Add VendaPal to your phone</strong>
         <span>Use it anytime, even without internet</span>
       </div>
       <div className="install-banner__actions">
