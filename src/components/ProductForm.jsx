@@ -104,7 +104,7 @@ export function ProductForm({ onSubmit, onCancel, initialValues = null }) {
 
       <div className="form-field">
         <label className="form-label">
-          Best before date <span className="optional">(optional)</span>
+          Expiry date <span className="optional">(optional)</span>
         </label>
         <input
           className="form-input"

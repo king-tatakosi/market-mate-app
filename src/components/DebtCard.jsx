@@ -130,8 +130,8 @@ export function DebtCard({ debt, onRecordPayment, onMarkPaid, onDelete, onNewDeb
             )}
 
             {debt.paid ? (
-              <button className="btn btn--outline btn--full" onClick={() => onNewDebt?.(debt)}>
-                + New Debt for {debt.name.split(' ')[0]}
+              <button className="btn btn--soft btn--full" onClick={() => onNewDebt?.(debt)}>
+                + Record New Debt for {debt.name.split(' ')[0]}
               </button>
             ) : (
               <div className="debt-card__actions">
@@ -139,7 +139,7 @@ export function DebtCard({ debt, onRecordPayment, onMarkPaid, onDelete, onNewDeb
                   💰 Record Payment
                 </button>
                 <button className="btn btn--success" onClick={() => onMarkPaid(debt.id)}>
-                  ✓ Mark Paid
+                  ✓ Mark as Paid
                 </button>
               </div>
             )}

@@ -173,7 +173,10 @@ export function Debts({ debts, supplierDebts }) {
         )}
       </div>
 
-      <button className="fab" onClick={() => setShowAdd(true)} aria-label="Add new record">+</button>
+      <button className="fab fab--extended" onClick={() => setShowAdd(true)} aria-label="Add new record">
+        <span className="fab__icon">+</span>
+        <span className="fab__label">{isOweMe ? 'Add Debt' : 'Add What I Owe'}</span>
+      </button>
 
       {showAdd && (
         <Modal

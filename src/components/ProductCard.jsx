@@ -116,7 +116,7 @@ export function ProductCard({ product, onUpdate, onDelete, onEdit }) {
             )}
             {product.expiryDate && (
               <div className="product-card__detail-row">
-                <span className="detail-label">Best before</span>
+                <span className="detail-label">Expires</span>
                 <span className={`detail-value${isExpired ? ' text-danger' : isExpiringSoon ? ' text-warning' : ''}`}>
                   {formatExpiryDate(product.expiryDate)}
                   {daysLeft !== null && daysLeft >= 0 && ` (${daysLeft} days)`}

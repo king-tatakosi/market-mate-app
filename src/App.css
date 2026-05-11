@@ -701,6 +701,13 @@
 .btn--danger      { color: var(--red);   background: var(--red-light); }
 .btn--danger-fill { color: white;        background: var(--red); }
 
+.btn--soft {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  color: var(--green-dark);
+  border: 1.5px solid rgba(22,163,74,0.3);
+  font-weight: 700;
+}
+
 .btn--full { width: 100%; }
 
 .btn--sm { padding: 8px 14px; font-size: 13px; min-height: 36px; }
@@ -728,6 +735,19 @@
 }
 
 .fab:active { transform: scale(0.92); }
+
+.fab--extended {
+  width: auto;
+  padding: 0 20px 0 14px;
+  border-radius: var(--r-full);
+  gap: 6px;
+  font-size: 15px;
+  font-family: var(--font-ui);
+  font-weight: 700;
+}
+
+.fab__icon { font-size: 22px; font-weight: 300; line-height: 1; }
+.fab__label { font-size: 15px; }
 
 @media (min-width: 480px) {
   .fab { right: calc(50% - 224px); }
