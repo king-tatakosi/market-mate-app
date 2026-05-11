@@ -865,14 +865,6 @@
 
 .search-input::placeholder { color: var(--text-light); }
 
-.search-clear {
-  font-size: 13px;
-  color: var(--text-muted);
-  padding: 3px 7px;
-  border-radius: var(--r-full);
-  background: var(--border);
-}
-
 /* ============================
    EMPTY STATE
    ============================ */

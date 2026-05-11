@@ -13,9 +13,7 @@ export function SearchBar({ value, onChange, placeholder = 'Search...', autoFocu
         autoComplete="off"
         aria-label={placeholder}
       />
-      {value && (
-        <button className="search-clear" onClick={() => onChange('')} aria-label="Clear search">✕</button>
-      )}
+
     </div>
   );
 }

@@ -5,7 +5,6 @@ import { Modal } from './Modal';
 function PaymentModal({ debt, onClose, onSubmit }) {
   const remaining = debt.amount - (debt.paidAmount || 0);
   const [amount, setAmount] = useState('');
-  const [note, setNote] = useState('');
   const [err, setErr] = useState('');
 
   const handleSubmit = e => {
@@ -13,7 +12,7 @@ function PaymentModal({ debt, onClose, onSubmit }) {
     const val = parseFloat(amount);
     if (!val || val <= 0) { setErr('Enter a valid amount'); return; }
     if (val > remaining) { setErr(`Amount cannot exceed ${formatCurrency(remaining)}`); return; }
-    onSubmit(val, note);
+    onSubmit(val);
   };
 
   return (
@@ -36,16 +35,6 @@ function PaymentModal({ debt, onClose, onSubmit }) {
             autoFocus
           />
           {err && <span className="form-error">{err}</span>}
-        </div>
-        <div className="form-field">
-          <label className="form-label">Note (optional)</label>
-          <input
-            className="form-input"
-            type="text"
-            placeholder="e.g. Half payment"
-            value={note}
-            onChange={e => setNote(e.target.value)}
-          />
         </div>
         <button className="btn btn--primary btn--full" type="submit">Save Payment</button>
       </form>
