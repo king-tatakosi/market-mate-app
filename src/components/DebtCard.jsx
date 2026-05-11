@@ -36,6 +36,8 @@ function PaymentModal({ debt, onClose, onSubmit }) {
           />
           {err && <span className="form-error">{err}</span>}
         </div>
+       
+        
         <button className="btn btn--primary btn--full" type="submit">Save Payment</button>
       </form>
     </Modal>

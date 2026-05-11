@@ -70,10 +70,12 @@ export function ProductCard({ product, onUpdate, onDelete, onEdit }) {
   const daysLeft = daysUntilExpiry(product.expiryDate);
   const isExpired = daysLeft !== null && daysLeft < 0;
   const isExpiringSoon = daysLeft !== null && daysLeft >= 0 && daysLeft <= 7;
-  const isLowStock = product.minStock !== undefined && +product.quantity <= +product.minStock;
+  const isOutOfStock = +product.quantity === 0;
+  const isLowStock = !isOutOfStock && product.minStock !== undefined && +product.quantity <= +product.minStock;
 
   const statusClass = isExpired ? 'product-card--expired'
     : isExpiringSoon ? 'product-card--expiring'
+    : isOutOfStock ? 'product-card--out-of-stock'
     : isLowStock ? 'product-card--low'
     : '';
 
@@ -93,7 +95,10 @@ export function ProductCard({ product, onUpdate, onDelete, onEdit }) {
             {!isExpired && isExpiringSoon && (
               <span className="badge badge--warning">{daysLeft}d left</span>
             )}
-            {!isExpired && !isExpiringSoon && isLowStock && (
+            {!isExpired && !isExpiringSoon && isOutOfStock && (
+              <span className="badge badge--danger">Out of Stock</span>
+            )}
+            {!isExpired && !isExpiringSoon && !isOutOfStock && isLowStock && (
               <span className="badge badge--info">Low Stock</span>
             )}
             <span className={`chevron${expanded ? ' chevron--up' : ''}`}>›</span>
@@ -125,14 +130,20 @@ export function ProductCard({ product, onUpdate, onDelete, onEdit }) {
               </div>
             )}
 
-            <div className="product-card__actions">
-              <button className="btn btn--primary" onClick={() => setStockMode('add')}>
-                + Add Stock
+            {isOutOfStock ? (
+              <button className="btn btn--primary btn--full" onClick={() => onEdit?.(product)}>
+                📦 Restock
               </button>
-              <button className="btn btn--outline-danger" onClick={() => setStockMode('remove')}>
-                − Remove Stock
-              </button>
-            </div>
+            ) : (
+              <div className="product-card__actions">
+                <button className="btn btn--primary" onClick={() => setStockMode('add')}>
+                  + Add Stock
+                </button>
+                <button className="btn btn--outline-danger" onClick={() => setStockMode('remove')}>
+                  − Remove Stock
+                </button>
+              </div>
+            )}
 
             <div className="product-card__actions">
               {onEdit && (

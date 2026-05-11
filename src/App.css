@@ -536,9 +536,10 @@
   border-left: 4px solid transparent;
 }
 
-.product-card--expired  { border-left-color: var(--red); }
-.product-card--expiring { border-left-color: var(--yellow); }
-.product-card--low      { border-left-color: var(--blue); }
+.product-card--expired      { border-left-color: var(--red); }
+.product-card--expiring     { border-left-color: var(--yellow); }
+.product-card--out-of-stock { border-left-color: var(--red); }
+.product-card--low          { border-left-color: var(--blue); }
 
 .product-card__row {
   display: flex;
