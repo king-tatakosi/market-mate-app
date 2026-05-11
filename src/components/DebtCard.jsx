@@ -111,12 +111,6 @@ export function DebtCard({ debt, onRecordPayment, onMarkPaid, onDelete, onNewDeb
               </div>
             )}
 
-            {debt.phone && (
-              <a className="btn btn--outline btn--full" href={`tel:${debt.phone}`}>
-                📞 Call {debt.name.split(' ')[0]}
-              </a>
-            )}
-
             {debt.payments?.length > 0 && (
               <div className="payment-history">
                 <p className="section-label">Payment History</p>
@@ -142,6 +136,12 @@ export function DebtCard({ debt, onRecordPayment, onMarkPaid, onDelete, onNewDeb
                   ✓ Mark as Paid
                 </button>
               </div>
+            )}
+
+            {debt.phone && (
+              <a className="btn btn--outline btn--full" href={`tel:${debt.phone}`}>
+                📞 Call {debt.name.split(' ')[0]}
+              </a>
             )}
 
             <div className="debt-card__actions">
